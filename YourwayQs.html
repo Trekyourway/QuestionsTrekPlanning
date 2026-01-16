@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YourWay Trek - שאלון אפיון</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap');
+        body { font-family: 'Heebo', sans-serif; background-color: #ecfdf5; /* emerald-50 */ }
+        
+        .animate-fadeIn { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .step-content { display: none; }
+        .step-content.active { display: block; }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+        /* Button Styles */
+        .btn-option {
+            transition: all 0.2s ease;
+            border-width: 2px;
+        }
+        .btn-option:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-color: #10b981; /* emerald-500 */
+        }
+        .btn-selected {
+            background-color: #059669; /* emerald-600 */
+            border-color: #059669;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.3);
+        }
+        .btn-selected .icon-box {
+            background-color: rgba(255,255,255,0.2);
+            color: white;
+        }
+        .btn-selected .text-muted {
+            color: rgba(255,255,255,0.9);
+        }
+        
+        /* Inputs */
+        input:focus, textarea:focus, select:focus {
+            border-color: #10b981;
+            ring: 2px solid #10b981;
+        }
+
+        /* Checkbox Custom */
+        input[type="checkbox"] {
+            accent-color: #059669;
+            width: 1.15rem;
+            height: 1.15rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <!-- Container widened to max-w-3xl for better laptop layout -->
+    <div class="w-full max-w-3xl bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
+        
+        <!-- Header -->
+        <div class="bg-emerald-800 p-5 text-white text-center relative shrink-0">
+            <div class="relative z-10">
+                <h1 class="text-2xl md:text-3xl font-bold tracking-wide mb-1">YourWay Trek</h1>
+                <p class="text-emerald-100 text-sm opacity-90">תכנון טרק בהתאמה אישית</p>
+            </div>
+            <!-- Decorative overlay -->
+            <div class="absolute top-0 left-0 w-full h-full bg-black opacity-10"></div>
+            <div class="absolute top-0 left-0 w-full h-full opacity-20 bg-[url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80')] bg-cover bg-center mix-blend-overlay"></div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="bg-gray-50 px-6 py-3 border-b border-gray-100 shrink-0">
+            <div class="flex justify-between text-xs text-gray-500 mb-2 font-bold">
+                <span id="step-indicator">שלב 1: היכרות</span>
+                <span>5 שלבים</span>
+            </div>
+            <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div id="progress-bar" class="h-full bg-emerald-600 transition-all duration-500 ease-out rounded-full" style="width: 20%"></div>
+            </div>
+        </div>
+
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto custom-scrollbar p-6 md:p-8">
+            
+            <!-- Step 1: Contact -->
+            <div id="step-1" class="step-content active space-y-6 animate-fadeIn">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">תכנון הטרק שלכם מתחיל כאן</h2>
+                    <p class="text-gray-500">נעים להכיר! כמה פרטים בסיסיים כדי שנוכל לבנות את המסלול המושלם עבורכם.</p>
+                </div>
+                
+                <!-- Side-by-side layout for large screens -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-2xl mx-auto">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1.5">שם מלא</label>
+                        <div class="relative">
+                            <i data-lucide="user" class="absolute right-3 top-3.5 h-5 w-5 text-gray-400"></i>
+                            <input type="text" id="input-name" class="w-full pr-10 pl-4 py-3 border-2 border-gray-200 rounded-xl outline-none transition-colors bg-gray-50 focus:bg-white" placeholder="ישראל ישראלי">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1.5">טלפון נייד</label>
+                        <div class="relative">
+                            <i data-lucide="phone" class="absolute right-3 top-3.5 h-5 w-5 text-gray-400"></i>
+                            <input type="tel" id="input-phone" class="w-full pr-10 pl-4 py-3 border-2 border-gray-200 rounded-xl outline-none transition-colors bg-gray-50 focus:bg-white" placeholder="05X-XXXXXXX" dir="ltr" style="text-align: right;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Who & When -->
+            <div id="step-2" class="step-content space-y-8 animate-fadeIn">
+                
+                <!-- Section: Travelers -->
+                <div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <span class="bg-emerald-100 text-emerald-800 w-6 h-6 rounded-full flex items-center justify-center text-xs">1</span>
+                        מי המטיילים?
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                        <!-- Left: Type Selection -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="setTravelerType('couple')" class="traveler-btn btn-option p-3 rounded-xl border-gray-200 text-gray-600 flex flex-col items-center gap-1" data-type="couple">
+                                <span class="text-2xl">💑</span>
+                                <span class="font-bold text-sm">זוג</span>
+                            </button>
+                            <button onclick="setTravelerType('friends')" class="traveler-btn btn-option p-3 rounded-xl border-gray-200 text-gray-600 flex flex-col items-center gap-1" data-type="friends">
+                                <span class="text-2xl">🥂</span>
+                                <span class="font-bold text-sm">חברים</span>
+                            </button>
+                            <button onclick="setTravelerType('family')" class="traveler-btn btn-option p-3 rounded-xl border-gray-200 text-gray-600 flex flex-col items-center gap-1" data-type="family">
+                                <span class="text-2xl">👨‍👩‍👧‍👦</span>
+                                <span class="font-bold text-sm">משפחה</span>
+                            </button>
+                            <button onclick="setTravelerType('solo')" class="traveler-btn btn-option p-3 rounded-xl border-gray-200 text-gray-600 flex flex-col items-center gap-1" data-type="solo">
+                                <span class="text-2xl">🏃</span>
+                                <span class="font-bold text-sm">לבד</span>
+                            </button>
+                        </div>
+
+                        <!-- Right: Counters -->
+                        <div class="space-y-3">
+                            <div class="bg-gray-50 p-3 rounded-xl border border-gray-200 flex items-center justify-between h-[76px]">
+                                <span class="font-bold text-gray-700">סה״כ מבוגרים</span>
+                                <div class="flex items-center gap-3 bg-white px-2 py-1.5 rounded-lg shadow-sm border border-gray-200">
+                                    <button onclick="updateCount('adults', -1)" class="w-8 h-8 flex items-center justify-center text-emerald-600 font-bold hover:bg-emerald-50 rounded">-</button>
+                                    <span id="adults-count-display" class="text-lg font-bold w-6 text-center">2</span>
+                                    <button onclick="updateCount('adults', 1)" class="w-8 h-8 flex items-center justify-center text-emerald-600 font-bold hover:bg-emerald-50 rounded">+</button>
+                                </div>
+                            </div>
+
+                            <!-- Kids Section (Conditional) -->
+                            <div id="kids-section" class="hidden bg-orange-50 p-3 rounded-xl border border-orange-100 animate-fadeIn">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-bold text-orange-900 text-sm">ילדים (עד 3)</span>
+                                    <div class="flex items-center gap-3 bg-white px-2 py-1 rounded-lg shadow-sm border border-orange-200">
+                                        <button onclick="updateCount('kids', -1)" class="w-7 h-7 flex items-center justify-center text-orange-600 font-bold hover:bg-orange-50 rounded">-</button>
+                                        <span id="kids-count-display" class="text-base font-bold w-4 text-center text-orange-900">0</span>
+                                        <button onclick="updateCount('kids', 1)" class="w-7 h-7 flex items-center justify-center text-orange-600 font-bold hover:bg-orange-50 rounded">+</button>
+                                    </div>
+                                </div>
+                                <div id="kids-ages-container" class="space-y-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-gray-100">
+
+                <!-- Section: Duration & Dates -->
+                <div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <span class="bg-emerald-100 text-emerald-800 w-6 h-6 rounded-full flex items-center justify-center text-xs">2</span>
+                        מתי ולכמה זמן?
+                    </h3>
+                    
+                    <div class="flex items-center gap-4 mb-5">
+                        <div class="w-1/2">
+                            <label class="block text-xs font-bold text-gray-500 mb-1">ימי הליכה (ברוטו)</label>
+                            <div class="relative">
+                                <select id="duration-select" onchange="updateNights()" class="w-full appearance-none bg-white border-2 border-gray-200 px-4 py-2.5 rounded-xl font-bold text-gray-700 outline-none focus:border-emerald-500 cursor-pointer">
+                                    <option value="3">3 ימים</option>
+                                    <option value="4">4 ימים</option>
+                                    <option value="5" selected>5 ימים</option>
+                                    <option value="6">6 ימים</option>
+                                    <option value="7">7 ימים</option>
+                                    <option value="8">8 ימים</option>
+                                    <option value="9">9+ ימים</option>
+                                </select>
+                                <i data-lucide="chevron-down" class="absolute left-3 top-3 w-5 h-5 text-gray-400 pointer-events-none"></i>
+                            </div>
+                        </div>
+                        <div class="w-1/2">
+                            <label class="block text-xs font-bold text-gray-500 mb-1">סה״כ לילות</label>
+                            <div id="nights-display" class="w-full bg-emerald-50 border-2 border-emerald-100 px-4 py-2.5 rounded-xl font-bold text-emerald-700 text-center">
+                                4 לילות
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex p-1 bg-gray-100 rounded-xl mb-4 max-w-sm">
+                        <button onclick="setDateMode('flexible')" id="btn-date-flex" class="flex-1 py-1.5 rounded-lg text-sm font-bold transition-all shadow-sm bg-white text-emerald-700">אני זורם</button>
+                        <button onclick="setDateMode('hard')" id="btn-date-hard" class="flex-1 py-1.5 rounded-lg text-sm font-bold transition-all text-gray-500 hover:text-gray-700">טווח קשיח</button>
+                    </div>
+
+                    <div id="date-input-flexible" class="animate-fadeIn">
+                        <textarea id="date-text" class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-emerald-500 outline-none resize-none h-20 text-sm" placeholder="למשל: ספטמבר עדיף, אבל גמישים גם ליולי..."></textarea>
+                    </div>
+
+                    <div id="date-input-hard" class="hidden animate-fadeIn space-y-3">
+                         <div class="grid grid-cols-2 gap-4">
+                             <div>
+                                 <span class="text-xs text-gray-500 mb-1 block font-bold">מאיזה תאריך</span>
+                                 <input type="date" id="date-start" class="w-full p-2 border-2 border-gray-200 rounded-xl outline-none focus:border-emerald-500 bg-white text-sm cursor-pointer">
+                             </div>
+                             <div>
+                                 <span class="text-xs text-gray-500 mb-1 block font-bold">עד איזה תאריך</span>
+                                 <input type="date" id="date-end" class="w-full p-2 border-2 border-gray-200 rounded-xl outline-none focus:border-emerald-500 bg-white text-sm cursor-pointer">
+                             </div>
+                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Style -->
+            <div id="step-3" class="step-content space-y-8 animate-fadeIn">
+                <h2 class="text-xl font-bold text-gray-800 mb-6 text-center">סגנון הטרק</h2>
+
+                <!-- Experience -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-3">מה הניסיון שלכם?</label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <button onclick="setSingleSelect('experience', 'first-time')" class="select-btn-experience btn-option w-full p-4 rounded-xl bg-white border-gray-200 text-right group" data-value="first-time">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="p-2 rounded-full bg-gray-100 text-gray-500 icon-box"><i data-lucide="footprints" class="w-5 h-5"></i></div>
+                                <span class="font-bold text-lg">טרק ראשון</span>
+                            </div>
+                            <p class="text-sm text-gray-500 text-muted pr-4">טיילנו בעבר, אבל לא בטרק רב-יומי מתגלגל.</p>
+                        </button>
+                        
+                        <button onclick="setSingleSelect('experience', 'experienced')" class="select-btn-experience btn-option w-full p-4 rounded-xl bg-white border-gray-200 text-right group" data-value="experienced">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="p-2 rounded-full bg-gray-100 text-gray-500 icon-box"><i data-lucide="mountain" class="w-5 h-5"></i></div>
+                                <span class="font-bold text-lg">מנוסים</span>
+                            </div>
+                            <p class="text-sm text-gray-500 text-muted pr-4">מכירים את השגרה של הליכה יום אחרי יום.</p>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Pace -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-3">קצב הליכה מועדף (נטו)</label>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <button onclick="setSingleSelect('pace', 'easy')" class="select-btn-pace btn-option w-full p-4 rounded-xl bg-white border-gray-200 flex flex-col items-center text-center gap-2" data-value="easy">
+                            <div class="p-2 rounded-full bg-gray-100 text-gray-500 shrink-0 icon-box"><i data-lucide="coffee" class="w-5 h-5"></i></div>
+                            <div>
+                                <div class="font-bold text-base">רגוע (4-5)</div>
+                                <div class="text-xs text-gray-500 text-muted leading-tight mt-1">זמן לקפה, מנוחה ונוף</div>
+                            </div>
+                        </button>
+                        <button onclick="setSingleSelect('pace', 'classic')" class="select-btn-pace btn-option w-full p-4 rounded-xl bg-white border-gray-200 flex flex-col items-center text-center gap-2" data-value="classic">
+                            <div class="p-2 rounded-full bg-gray-100 text-gray-500 shrink-0 icon-box"><i data-lucide="activity" class="w-5 h-5"></i></div>
+                            <div>
+                                <div class="font-bold text-base">קלאסי (5-7)</div>
+                                <div class="text-xs text-gray-500 text-muted leading-tight mt-1">הסטנדרט המקובל</div>
+                            </div>
+                        </button>
+                        <button onclick="setSingleSelect('pace', 'intense')" class="select-btn-pace btn-option w-full p-4 rounded-xl bg-white border-gray-200 flex flex-col items-center text-center gap-2" data-value="intense">
+                            <div class="p-2 rounded-full bg-gray-100 text-gray-500 shrink-0 icon-box"><i data-lucide="zap" class="w-5 h-5"></i></div>
+                            <div>
+                                <div class="font-bold text-base">אינטנסיבי (7+)</div>
+                                <div class="text-xs text-gray-500 text-muted leading-tight mt-1">לקום מוקדם וללכת</div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Technical -->
+                <label class="flex items-center gap-4 p-4 bg-blue-50 rounded-xl border border-blue-100 cursor-pointer hover:bg-blue-100 transition-colors">
+                    <input type="checkbox" id="technical">
+                    <div class="text-sm text-gray-800">
+                        <span class="font-bold block mb-1">פתוחים לאתגרים טכניים?</span>
+                        מוכנים לשלב סולמות, כבלים או יתדות (לא לסובלים מפחד גבהים).
+                    </div>
+                </label>
+            </div>
+
+            <!-- Step 4: Accommodation -->
+            <div id="step-4" class="step-content space-y-8 animate-fadeIn">
+                <h2 class="text-xl font-bold text-gray-800 mb-6 text-center">לינה ולוגיסטיקה</h2>
+
+                <!-- Accommodation -->
+                <div>
+                    <div class="flex justify-between items-end mb-3">
+                        <label class="block text-sm font-bold text-gray-700">העדפות לינה</label>
+                        <span class="text-xs text-emerald-700 bg-emerald-100 px-2 py-1 rounded-md font-medium">ניתן לבחור שילובים</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <button onclick="toggleMultiSelect('accom', 'dorms')" class="select-btn-accom btn-option w-full p-4 rounded-xl bg-white border-gray-200 text-right flex items-start gap-4" data-value="dorms">
+                            <div class="p-2 rounded-full bg-gray-100 text-gray-500 shrink-0 mt-1 icon-box"><i data-lucide="users" class="w-5 h-5"></i></div>
+                            <div class="flex-1">
+                                <div class="font-bold text-base">דורמיטורי (משותף)</div>
+                                <div class="text-xs text-gray-500 text-muted">חווית בקתה אמיתית וזולה.</div>
+                            </div>
+                            <i data-lucide="check-circle" class="w-6 h-6 text-white opacity-0 check-icon transition-opacity"></i>
+                        </button>
+
+                        <button onclick="toggleMultiSelect('accom', 'private-hut')" class="select-btn-accom btn-option w-full p-4 rounded-xl bg-white border-gray-200 text-right flex items-start gap-4" data-value="private-hut">
+                            <div class="p-2 rounded-full bg-gray-100 text-gray-500 shrink-0 mt-1 icon-box"><i data-lucide="home" class="w-5 h-5"></i></div>
+                            <div class="flex-1">
+                                <div class="font-bold text-base">חדר פרטי בבקתה</div>
+                                <div class="text-xs text-gray-500 text-muted">עם מקלחת משותפת או בתוך החדר.</div>
+                            </div>
+                            <i data-lucide="check-circle" class="w-6 h-6 text-white opacity-0 check-icon transition-opacity"></i>
+                        </button>
+
+                        <button onclick="toggleMultiSelect('accom', 'hotel-valley')" class="select-btn-accom btn-option w-full p-4 rounded-xl bg-white border-gray-200 text-right flex items-start gap-4" data-value="hotel-valley">
+                            <div class="p-2 rounded-full bg-gray-100 text-gray-500 shrink-0 mt-1 icon-box"><i data-lucide="bed" class="w-5 h-5"></i></div>
+                            <div class="flex-1">
+                                <div class="font-bold text-base">מלונות בעמקים</div>
+                                <div class="text-xs text-gray-500 text-muted">ירידה מההר למלון מפנק בסוף יום.</div>
+                            </div>
+                            <i data-lucide="check-circle" class="w-6 h-6 text-white opacity-0 check-icon transition-opacity"></i>
+                        </button>
+
+                        <button onclick="toggleMultiSelect('accom', 'whatever')" class="select-btn-accom btn-option w-full p-4 rounded-xl bg-gray-50 border-gray-300 border-dashed text-right flex items-center gap-4" data-value="whatever">
+                            <div class="p-2 rounded-full bg-gray-200 text-gray-600 shrink-0 icon-box"><i data-lucide="sparkles" class="w-5 h-5"></i></div>
+                            <div class="flex-1 font-bold text-gray-700">כל מה שצריך כדי שזה יקרה!</div>
+                            <i data-lucide="check-circle" class="w-6 h-6 text-white opacity-0 check-icon transition-opacity"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <hr class="border-gray-100">
+
+                <!-- Transport -->
+                <div class="space-y-5">
+                    <label class="block text-sm font-bold text-gray-700">לוגיסטיקה</label>
+                    
+                    <div class="flex gap-4">
+                        <button onclick="setSingleSelect('luggage', 'false')" class="select-btn-luggage btn-option flex-1 p-4 rounded-xl bg-white border-gray-200 flex flex-col items-center gap-2" data-value="false">
+                            <i data-lucide="backpack" class="w-6 h-6 text-gray-400 mb-1 icon-simple"></i>
+                            <span class="font-bold text-sm">הכל על הגב</span>
+                        </button>
+                        <button onclick="setSingleSelect('luggage', 'true')" class="select-btn-luggage btn-option flex-1 p-4 rounded-xl bg-white border-gray-200 flex flex-col items-center gap-2" data-value="true">
+                            <i data-lucide="truck" class="w-6 h-6 text-gray-400 mb-1 icon-simple"></i>
+                            <span class="font-bold text-sm">הקפצת ציוד</span>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+                        <label class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer border border-transparent hover:border-gray-200">
+                            <input type="checkbox" id="cable-car">
+                            <span class="text-sm font-medium text-gray-700">מעוניינים בשימוש ברכבלים</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer border border-transparent hover:border-gray-200">
+                            <input type="checkbox" id="public-transport">
+                            <span class="text-sm font-medium text-gray-700">מוכנ.ה לשימוש בתחבורה ציבורית</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5: Finish -->
+            <div id="step-5" class="step-content space-y-8 animate-fadeIn">
+                <h2 class="text-xl font-bold text-gray-800 mb-6 text-center">סיום ודגשים אחרונים</h2>
+
+                <!-- Diet -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
+                        <i data-lucide="utensils" class="w-4 h-4"></i> דגשי תזונה
+                    </label>
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        <button onclick="toggleDiet(this)" class="diet-btn btn-option px-4 py-2 rounded-full text-sm bg-white border-gray-200 text-gray-600" data-val="צמחוני">צמחוני</button>
+                        <button onclick="toggleDiet(this)" class="diet-btn btn-option px-4 py-2 rounded-full text-sm bg-white border-gray-200 text-gray-600" data-val="טבעוני">טבעוני</button>
+                        <button onclick="toggleDiet(this)" class="diet-btn btn-option px-4 py-2 rounded-full text-sm bg-white border-gray-200 text-gray-600" data-val="כשר">כשר</button>
+                        <button onclick="toggleDiet(this)" class="diet-btn btn-option px-4 py-2 rounded-full text-sm bg-white border-gray-200 text-gray-600" data-val="ללא גלוטן">ללא גלוטן</button>
+                        <button onclick="toggleDiet(this)" class="diet-btn btn-option px-4 py-2 rounded-full text-sm bg-white border-gray-200 text-gray-600" data-val="אחר">אחר...</button>
+                    </div>
+                    <div id="diet-other-container" class="hidden mt-2 animate-fadeIn">
+                        <input type="text" id="diet-other" class="w-full p-3 border-2 border-emerald-100 rounded-xl focus:border-emerald-500 outline-none text-sm bg-emerald-50" placeholder="פרט/י את הרגישות או הדרישה המיוחדת...">
+                    </div>
+                </div>
+
+                <!-- Notes -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">הערות וחלומות</label>
+                    <div class="bg-yellow-50 p-3 rounded-xl text-xs text-yellow-800 mb-3 flex items-start gap-2 border border-yellow-100">
+                        <i data-lucide="lightbulb" class="w-4 h-4 shrink-0 mt-0.5"></i>
+                        כאן המקום לפרט כל דבר נוסף: גילאי הילדים, בקשות מיוחדות, בעיות רפואיות, או חלומות קטנים.
+                    </div>
+                    <textarea id="notes" class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-emerald-500 outline-none h-32 resize-none text-base transition-all" placeholder="הערות חופשיות..."></textarea>
+                </div>
+            </div>
+
+            <!-- Success Screen -->
+            <div id="success-screen" class="hidden flex flex-col items-center justify-center text-center py-10 animate-fadeIn h-full">
+                <div class="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center mb-6 animate-bounce">
+                    <i data-lucide="check" class="w-12 h-12 text-emerald-600"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">תודה <span id="success-name"></span>!</h2>
+                <p class="text-gray-600 text-lg mb-8 max-w-sm">
+                    הפרטים נקלטו בהצלחה.<br>
+                    אני אעבור עליהם ואחזור אליכם בהקדם לתכנון הטרק המושלם.
+                </p>
+                <div class="p-4 bg-emerald-50 rounded-xl border border-emerald-100 text-emerald-800 text-sm font-medium">
+                    ניתן לסגור את החלון כעת.
+                </div>
+            </div>
+
+            <!-- Error Screen -->
+            <div id="error-screen" class="hidden flex flex-col items-center justify-center text-center py-10 animate-fadeIn h-full">
+                <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                    <i data-lucide="alert-triangle" class="w-10 h-10 text-red-600"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">אופס... משהו השתבש</h2>
+                <p class="text-gray-600 mb-6">
+                   לא הצלחנו לשלוח את הפרטים.<br>
+                   אנא נסו שוב או צרו קשר ישירות בוואטספ.
+                </p>
+                <button onclick="location.reload()" class="px-8 py-3 bg-gray-800 text-white rounded-full font-bold hover:bg-gray-900 transition-colors">נסה שוב</button>
+            </div>
+
+        </div>
+
+        <!-- Footer Navigation -->
+        <div id="footer-nav" class="p-5 border-t border-gray-100 bg-white flex justify-between items-center shrink-0 z-20">
+            <button onclick="prevStep()" id="btn-back" class="p-3 rounded-full transition-colors text-gray-300 cursor-not-allowed hover:bg-gray-100" disabled>
+                <i data-lucide="arrow-right" class="w-6 h-6"></i>
+            </button>
+
+            <button onclick="nextStep()" id="btn-next" class="flex items-center gap-2 px-10 py-3.5 rounded-full font-bold text-lg shadow-lg shadow-emerald-100 transition-all transform hover:scale-[1.02] active:scale-95 bg-emerald-600 hover:bg-emerald-700 text-white disabled:bg-gray-300 disabled:shadow-none disabled:cursor-not-allowed" disabled>
+                <span id="btn-next-text">המשך</span>
+                <i data-lucide="arrow-left" id="btn-next-icon" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="fixed bottom-2 w-full text-center text-emerald-800/40 text-[10px] pointer-events-none">
+        YourWay Trek Planning System &copy; 2026
+    </div>
+
+    <script>
+        // *** CONFIGURATION ***
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxHFhPtSVSr4kwnrPFudkBCfGYh04Q4tTBakFtq66LGjWQNkcleX8JB-rhw9m-MLHGP/exec"; 
+        
+        // --- Init ---
+        lucide.createIcons();
+        let currentStep = 1;
+        const totalSteps = 5;
+        
+        // Data State
+        const formData = {
+            name: '',
+            phone: '',
+            travelerType: 'couple',
+            adultsCount: 2,
+            kidsCount: 0,
+            kidsAges: [],
+            durationDays: 5,
+            dateMode: 'flexible',
+            dateText: '',
+            dateStart: '',
+            dateEnd: '',
+            experience: '',
+            pace: '',
+            technical: false,
+            accommodation: [],
+            luggage: '',
+            cableCar: false,
+            publicTransport: false,
+            diets: [],
+            dietOther: '',
+            notes: ''
+        };
+
+        // --- Navigation ---
+        function updateUI() {
+            // Update Progress Bar
+            const pct = (currentStep / totalSteps) * 100;
+            document.getElementById('progress-bar').style.width = `${pct}%`;
+            
+            // Update Text Indicator
+            const titles = ["היכרות", "מי ומתי", "סגנון הטרק", "לוגיסטיקה", "סיום"];
+            document.getElementById('step-indicator').textContent = `שלב ${currentStep}: ${titles[currentStep-1]}`;
+
+            // Show active step
+            document.querySelectorAll('.step-content').forEach((el, idx) => {
+                if (idx + 1 === currentStep) {
+                    el.classList.add('active');
+                    el.classList.add('animate-fadeIn');
+                } else {
+                    el.classList.remove('active');
+                }
+            });
+
+            // Back Button State
+            const btnBack = document.getElementById('btn-back');
+            btnBack.disabled = currentStep === 1;
+            if(currentStep === 1) {
+                btnBack.classList.add('text-gray-300', 'cursor-not-allowed');
+                btnBack.classList.remove('text-gray-600', 'hover:bg-gray-100');
+            } else {
+                btnBack.classList.remove('text-gray-300', 'cursor-not-allowed');
+                btnBack.classList.add('text-gray-600', 'hover:bg-gray-100');
+            }
+
+            // Next Button State
+            const btnNextText = document.getElementById('btn-next-text');
+            const btnNextIcon = document.getElementById('btn-next-icon');
+            
+            if (currentStep === totalSteps) {
+                btnNextText.textContent = "שלח פרטים";
+                btnNextIcon.setAttribute('data-lucide', 'send');
+            } else {
+                btnNextText.textContent = "המשך";
+                btnNextIcon.setAttribute('data-lucide', 'arrow-left');
+            }
+            lucide.createIcons();
+            
+            // Scroll to top
+            const container = document.querySelector('.overflow-y-auto');
+            if(container) container.scrollTop = 0;
+
+            validateStep();
+        }
+
+        function validateStep() {
+            let isValid = true;
+            const btnNext = document.getElementById('btn-next');
+
+            if (currentStep === 1) {
+                const name = document.getElementById('input-name').value.trim();
+                const phone = document.getElementById('input-phone').value.trim();
+                isValid = name.length > 1 && phone.length > 8;
+                formData.name = name;
+                formData.phone = phone;
+            } 
+            else if (currentStep === 2) {
+                formData.dateText = document.getElementById('date-text').value;
+                formData.dateStart = document.getElementById('date-start').value;
+                formData.dateEnd = document.getElementById('date-end').value;
+
+                if (formData.dateMode === 'hard') {
+                    if (!formData.dateStart || !formData.dateEnd) isValid = false;
+                }
+            }
+            else if (currentStep === 3) {
+                 if (!formData.experience || !formData.pace) isValid = false;
+                 formData.technical = document.getElementById('technical').checked;
+            }
+            else if (currentStep === 4) {
+                 if (formData.accommodation.length === 0) isValid = false;
+                 if (!formData.luggage) isValid = false;
+                 formData.cableCar = document.getElementById('cable-car').checked;
+                 formData.publicTransport = document.getElementById('public-transport').checked;
+            }
+            else if (currentStep === 5) {
+                formData.dietOther = document.getElementById('diet-other').value;
+                formData.notes = document.getElementById('notes').value;
+            }
+
+            btnNext.disabled = !isValid;
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateUI();
+            } else {
+                submitForm();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateUI();
+            }
+        }
+
+        // Listeners for inputs
+        ['input-name', 'input-phone', 'date-text', 'date-start', 'date-end', 'diet-other', 'notes'].forEach(id => {
+            document.getElementById(id)?.addEventListener('input', validateStep);
+        });
+
+        // --- Logic: Step 2 (Travelers) ---
+        function setTravelerType(type) {
+            formData.travelerType = type;
+            
+            if(type === 'solo') {
+                formData.adultsCount = 1;
+                formData.kidsCount = 0;
+            } else if (type === 'couple') {
+                formData.adultsCount = 2;
+                formData.kidsCount = 0;
+            } else if (type === 'friends') {
+                if(formData.adultsCount < 2) formData.adultsCount = 2;
+                formData.kidsCount = 0;
+            } else if (type === 'family') {
+                if(formData.adultsCount < 1) formData.adultsCount = 2;
+            }
+
+            document.querySelectorAll('.traveler-btn').forEach(btn => {
+                const isSelected = btn.dataset.type === type;
+                if(isSelected) {
+                    btn.classList.add('btn-selected');
+                    btn.classList.remove('border-gray-200', 'text-gray-600');
+                } else {
+                    btn.classList.remove('btn-selected');
+                    btn.classList.add('border-gray-200', 'text-gray-600');
+                }
+            });
+
+            const kidsSection = document.getElementById('kids-section');
+            if(type === 'family') {
+                kidsSection.classList.remove('hidden');
+            } else {
+                kidsSection.classList.add('hidden');
+                formData.kidsCount = 0;
+            }
+            
+            updateCountersDisplay();
+        }
+
+        function updateCount(type, diff) {
+            if (type === 'adults') {
+                let newCount = formData.adultsCount + diff;
+                if(newCount < 1) newCount = 1;
+                formData.adultsCount = newCount;
+            } else if (type === 'kids') {
+                let newCount = formData.kidsCount + diff;
+                if(newCount < 0) newCount = 0;
+                if(newCount > 3) return; 
+                formData.kidsCount = newCount;
+                renderKidsAgeInputs();
+            }
+            updateCountersDisplay();
+        }
+
+        function updateCountersDisplay() {
+            document.getElementById('adults-count-display').textContent = formData.adultsCount;
+            document.getElementById('kids-count-display').textContent = formData.kidsCount;
+        }
+
+        function renderKidsAgeInputs() {
+            const container = document.getElementById('kids-ages-container');
+            container.innerHTML = ''; 
+            for (let i = 0; i < formData.kidsCount; i++) {
+                const div = document.createElement('div');
+                div.className = 'flex items-center gap-2 animate-fadeIn';
+                div.innerHTML = `
+                    <span class="text-sm text-gray-600 w-16">גיל ילד ${i+1}:</span>
+                    <input type="number" class="kids-age-input flex-1 p-2 border border-orange-200 rounded-lg text-sm focus:border-orange-500 outline-none" placeholder="גיל">
+                `;
+                container.appendChild(div);
+            }
+        }
+
+        // --- Logic: Step 2 (Duration & Dates) ---
+        function updateNights() {
+            const days = parseInt(document.getElementById('duration-select').value);
+            formData.durationDays = days;
+            document.getElementById('nights-display').textContent = `${days - 1} לילות`;
+        }
+
+        function setDateMode(mode) {
+            formData.dateMode = mode;
+            const btnFlex = document.getElementById('btn-date-flex');
+            const btnHard = document.getElementById('btn-date-hard');
+            const divFlex = document.getElementById('date-input-flexible');
+            const divHard = document.getElementById('date-input-hard');
+
+            if (mode === 'flexible') {
+                btnFlex.className = "flex-1 py-1.5 rounded-lg text-sm font-bold transition-all shadow-sm bg-emerald-600 text-white";
+                btnHard.className = "flex-1 py-1.5 rounded-lg text-sm font-bold transition-all text-gray-500 hover:text-gray-700 hover:bg-white";
+                divFlex.classList.remove('hidden');
+                divHard.classList.add('hidden');
+            } else {
+                btnHard.className = "flex-1 py-1.5 rounded-lg text-sm font-bold transition-all shadow-sm bg-emerald-600 text-white";
+                btnFlex.className = "flex-1 py-1.5 rounded-lg text-sm font-bold transition-all text-gray-500 hover:text-gray-700 hover:bg-white";
+                divHard.classList.remove('hidden');
+                divFlex.classList.add('hidden');
+            }
+            validateStep();
+        }
+
+        // --- Logic: Step 3 & 4 (Selections) ---
+        function setSingleSelect(groupName, value) {
+            if(groupName === 'experience') formData.experience = value;
+            if(groupName === 'pace') formData.pace = value;
+            if(groupName === 'luggage') formData.luggage = value;
+
+            const btnClass = `select-btn-${groupName}`;
+            document.querySelectorAll(`.${btnClass}`).forEach(btn => {
+                const isSelected = btn.dataset.value === value;
+                const iconBox = btn.querySelector('.icon-simple'); // For luggage simple icons
+
+                if (isSelected) {
+                    btn.classList.add('btn-selected');
+                    btn.classList.remove('bg-white', 'border-gray-200');
+                    if(iconBox) iconBox.classList.add('text-white');
+                    if(iconBox) iconBox.classList.remove('text-gray-400');
+                } else {
+                    btn.classList.remove('btn-selected');
+                    btn.classList.add('bg-white', 'border-gray-200');
+                    if(iconBox) iconBox.classList.remove('text-white');
+                    if(iconBox) iconBox.classList.add('text-gray-400');
+                }
+            });
+            validateStep();
+        }
+
+        function toggleMultiSelect(groupName, value) {
+            const arr = formData.accommodation;
+            const idx = arr.indexOf(value);
+            
+            if(idx > -1) { arr.splice(idx, 1); } else { arr.push(value); }
+
+            const btn = document.querySelector(`.select-btn-accom[data-value="${value}"]`);
+            const isSelected = arr.includes(value);
+            const checkIcon = btn.querySelector('.check-icon');
+
+            if (isSelected) {
+                btn.classList.add('btn-selected');
+                btn.classList.remove('bg-white', 'border-gray-200', 'bg-gray-50', 'border-gray-300', 'border-dashed');
+                checkIcon.classList.remove('opacity-0');
+            } else {
+                btn.classList.remove('btn-selected');
+                checkIcon.classList.add('opacity-0');
+                if(value === 'whatever') {
+                    btn.classList.add('bg-gray-50', 'border-dashed', 'border-gray-300');
+                } else {
+                    btn.classList.add('bg-white', 'border-gray-200');
+                }
+            }
+            validateStep();
+        }
+
+        // --- Logic: Step 5 (Diet) ---
+        function toggleDiet(btn) {
+            const val = btn.dataset.val;
+            const idx = formData.diets.indexOf(val);
+            
+            if(idx > -1) {
+                formData.diets.splice(idx, 1);
+                btn.classList.remove('btn-selected');
+                btn.classList.add('bg-white', 'border-gray-200', 'text-gray-600');
+            } else {
+                formData.diets.push(val);
+                btn.classList.add('btn-selected');
+                btn.classList.remove('bg-white', 'border-gray-200', 'text-gray-600');
+            }
+
+            const otherContainer = document.getElementById('diet-other-container');
+            if(formData.diets.includes('אחר')) {
+                otherContainer.classList.remove('hidden');
+            } else {
+                otherContainer.classList.add('hidden');
+            }
+        }
+
+        // --- Final Submit ---
+        function submitForm() {
+            const btnNext = document.getElementById('btn-next');
+            const btnText = document.getElementById('btn-next-text');
+            const btnIcon = document.getElementById('btn-next-icon');
+            
+            // Loading State
+            btnText.textContent = "שולח...";
+            btnNext.disabled = true;
+            btnIcon.style.display = 'none';
+            // Simple spinner
+            const spinner = document.createElement('div');
+            spinner.className = 'loader border-t-white border-2 border-transparent w-5 h-5 rounded-full animate-spin ml-2';
+            btnNext.appendChild(spinner);
+
+            // Collect dynamic kids ages
+            formData.kidsAges = [];
+            document.querySelectorAll('.kids-age-input').forEach(input => {
+                if(input.value) formData.kidsAges.push(input.value);
+            });
+            
+            // Send Data
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                document.getElementById('step-5').classList.remove('active');
+                document.getElementById('footer-nav').style.display = 'none';
+                document.getElementById('success-screen').classList.remove('hidden');
+                document.getElementById('success-name').textContent = formData.name;
+                document.querySelector('.overflow-y-auto').scrollTop = 0;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('step-5').classList.remove('active');
+                document.getElementById('footer-nav').style.display = 'none';
+                document.getElementById('error-screen').classList.remove('hidden');
+            });
+        }
+
+        // Init Defaults
+        setTravelerType('couple');
+        updateNights(); 
+        setDateMode('flexible');
+
+    </script>
+</body>
+</html>
