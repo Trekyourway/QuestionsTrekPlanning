@@ -1,0 +1,108 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="description" content="מפת הלינה של פולינה ואלי בדולומיטים 29–30 ביולי 2027"><title>פולינה ואלי | מפת לינה בדולומיטים</title><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap');
+:root{--ink:#26221e;--muted:#68615a;--bg:#faf9f5;--line:#e5e0d7;--pink:#d62e83;--mint:#bfead8;--yellow:#ffe078}
+*{box-sizing:border-box}body{font-family:Heebo,Arial,sans-serif;color:var(--ink);background:var(--bg);margin:0}button,input,select{font:inherit}button,a{cursor:pointer}
+header{background:#fff;border-bottom:1px solid var(--line);padding:22px max(calc((100vw - 1350px)/2),18px) 18px}
+.eyebrow{color:var(--pink);font-size:11px;font-weight:800;letter-spacing:.075em}h1{font-size:clamp(25px,3vw,35px);margin:4px 0 6px;line-height:1.2}p.desc{font-size:13px;color:var(--muted);margin:0;line-height:1.65}
+.headline{display:flex;align-items:start;justify-content:space-between;gap:20px}
+.share-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.btn{background:#fff;color:#26221e;border:1px solid var(--line);padding:9px 13px;border-radius:11px;font-size:12px;font-weight:800}
+.btn.accent{background:var(--pink);color:white;border-color:var(--pink)}
+.container{max-width:1350px;margin:auto;padding:0 18px}
+.numbers{padding:14px 0 12px;display:flex;gap:8px;flex-wrap:wrap}
+.numbers div{border:1px solid var(--line);background:white;border-radius:10px;padding:8px 11px;font-size:12px}
+.numbers b{font-size:14px}
+.columns{display:grid;grid-template-columns:1.1fr 1fr;gap:19px;align-items:start}
+.map-panel{position:sticky;top:10px;background:white;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+#map{height:min(70vh,700px);min-height:450px;z-index:0;background:#eee}
+.map-actions{position:absolute;z-index:500;top:13px;right:13px;display:flex;gap:7px}
+.map-actions button{background:#fff;border:1px solid #dcd6c9;border-radius:9px;box-shadow:0 1px 8px #0002;padding:7px 10px;font-size:12px;font-weight:800}
+.legend{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px;color:var(--muted);font-size:11px}
+.legend i{display:inline-block;height:8px;width:8px;border-radius:50%;margin-left:4px}
+.note{background:#f5f0e9;border-top:1px solid var(--line);font-size:11px;padding:11px 12px;color:#595248;line-height:1.6}
+aside h2{margin:0 0 9px;font-size:17px}
+.filters{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:9px}.filters::-webkit-scrollbar{display:none}
+.chip{background:#fff;border:1px solid var(--line);border-radius:20px;padding:7px 11px;font-size:12px;font-weight:700;white-space:nowrap}.chip.sel{background:#28231f;color:#fff;border-color:#28231f}
+.search{display:flex;gap:7px}.search input{flex:1;min-width:0;border:1px solid var(--line);padding:10px 12px;background:#fff;border-radius:11px;outline:none;font-size:12px}
+.search select{max-width:128px;border:1px solid var(--line);padding:7px;background:white;border-radius:10px;font-size:12px}
+.count{font-size:12px;color:var(--muted);padding:8px 3px 10px}
+.list{max-height:760px;overflow:auto;display:grid;gap:9px;padding:0 2px 10px 0}
+.card{background:white;border:1px solid var(--line);border-radius:13px;padding:13px 14px;cursor:pointer}
+.card:focus,.card:hover{border-color:#e59bbf;outline:none}.card.reserved,.card.offer{border-right:3px solid var(--pink)}
+.card-head{display:flex;align-items:start;justify-content:space-between;gap:10px}
+.card h3{font-size:14px;margin:0;line-height:1.4}.area{font-size:11px;color:#817a70;margin:3px 0}
+.tag{border-radius:20px;padding:4px 8px;background:#f1eee8;font-weight:700;font-size:10px;white-space:nowrap}
+.tag.reserved{background:#caebda;color:#135d37}.tag.offer{background:#ffe1f0;color:#98104f}
+.tag.blocked{background:#f4e0d9;color:#97412d}.tag.online,.tag.later{background:#f8edce;color:#745b19}
+.price{font-weight:800;font-size:17px;margin-top:7px}.price:empty{display:none}
+.details{font-size:12px;color:#605a51;line-height:1.5;margin:6px 0 8px}
+.links{display:flex;gap:6px;flex-wrap:wrap}.links a,.links button{border:1px solid #e8e0d8;background:#fff;padding:6px 9px;font-size:11px;border-radius:8px;text-decoration:none;color:var(--ink);font-weight:800}
+.links a:first-child{background:#fff0f7;border-color:#ecc1d8;color:#8c1958}
+.lpin{height:25px;width:25px;display:block;border:3px solid #fff;border-radius:100%;box-shadow:0 2px 8px #0006}
+.lpin.reserved{background:#238653}.lpin.offer{background:#d62e83}.lpin.pending{background:#88857e}.lpin.blocked{background:#98634b}.lpin.online,.lpin.later{background:#c8a23e}
+.lpin.trail{background:#28231f;border-radius:8px;color:white;text-align:center;font-size:13px;font-weight:800;line-height:19px}
+footer{border-top:1px solid var(--line);margin-top:30px;padding:18px 0 30px;color:var(--muted);font-size:11px;line-height:1.65}
+.leaflet-container{font-family:Heebo,Arial,sans-serif}.leaflet-popup-content{line-height:1.65;margin:10px 14px;font-size:12px}.leaflet-popup-content b{font-size:14px}
+.leaflet-popup-content a{display:inline-block;padding:7px 10px;border-radius:8px;background:#d62e83;color:#fff;text-decoration:none;font-weight:800;margin-top:8px}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);color:#fff;background:#2c251e;padding:9px 16px;border-radius:20px;display:none;z-index:9000;font-size:12px}
+@media(max-width:850px){.container{padding:0 12px}header{padding:16px 13px}.headline{display:block}.share-row{margin-top:11px}.numbers{gap:6px}.numbers div{padding:7px;font-size:11px}
+.columns{display:flex;flex-direction:column;gap:17px}.map-panel{position:relative;width:100%;top:0}.map-actions{top:9px;right:9px}
+#map{height:345px;min-height:0}.list{max-height:none;overflow:visible}aside{width:100%}.legend{gap:7px;padding:9px}footer{margin-top:20px}
+}
+</style></head><body>
+<header><div class="headline"><div><div class="eyebrow">YOURWAY TREK · מפת לינה</div><h1>פולינה ואלי · הדולומיטים</h1><p class="desc">29–30 ביולי 2027 · מקומות לינה, מחירים, תשובות מהמלונות ונקודות המסלול במפה אחת. לחצו על כל מקום לפתיחת המיקום והניווט.</p></div><div class="share-row"><button id="share" class="btn accent">שיתוף בוואטסאפ / בטלפון</button><button id="copy" class="btn">העתקת קישור</button></div></div></header>
+<div class="container"><div class="numbers"><div><b>29</b> מקומות שפנינו אליהם</div><div><b>1</b> חדר שדווח כשמור</div><div><b>3</b> הצעות מחיר עם סכום</div><div>נקודות Lagazuoi ו־Scotoni כלולות</div></div>
+<div class="columns"><section class="map-panel"><div style="position:relative"><div id="map"></div><div class="map-actions"><button id="near">ארמנטרולה</button><button id="all">כל האזור</button></div></div>
+<div class="legend"><span><i style="background:#238653"></i>שמור</span><span><i style="background:#d62e83"></i>הצעה</span><span><i style="background:#88857e"></i>ממתינים</span><span><i style="background:#98634b"></i>ללא לילה אחד</span><span><i style="background:#28231f"></i>נקודת מסלול</span></div><div class="note">נקודות המסלול, כולל Lagazuoi, Scotoni, Capanna Alpina ומעברי ההרים, מוצגות להשוואת מיקום. אין כאן תוואי הליכה מאושר. המיקום של Les Pizades משוער.</div></section>
+<aside><h2>כל מקומות הלינה</h2><div id="filters" class="filters"><button class="chip sel" data-group="all">הכול</button><button class="chip" data-group="near">ארמנטרולה</button><button class="chip" data-group="passes">המעברים והבקתות</button><button class="chip" data-group="san">סן קסיאנו</button><button class="chip" data-group="pocol">Pocol והדרך</button><button class="chip" data-group="cortina">קורטינה</button></div>
+<div class="search"><input id="search" placeholder="חפשו מקום או אזור…" aria-label="חיפוש"><select id="stat" aria-label="סינון לפי תשובה"><option value="all">כל התשובות</option><option value="reserved">שמור</option><option value="offer">הצעות מחיר</option><option value="pending">ממתינים</option><option value="blocked">לא מאפשרים לילה</option><option value="online">בדיקה באתר</option><option value="later">בהמשך</option></select></div>
+<div id="count" class="count"></div><div id="list" class="list"></div></aside></div>
+<footer><strong>עדכון המידע: 26.11.2026.</strong> התשובות והמחירים מבוססים על ההתכתבויות עם מקומות הלינה; זו אינה בדיקת זמינות בזמן אמת. Ciasa Salares דיווחו שהחדר שמור, אך לא אומת תשלום. שאר ההצעות אינן הזמנות. הזמינות, המסים ומסלולי ההליכה דורשים אימות לפני סגירה. מפה: OpenStreetMap.</footer></div><div id="toast"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>const HOTELS=[["Hotel Valparol","ארמנטרולה","near",46.5592434,11.9574803,"pending","","עדיין אין תשובה; ביקשנו חריגה מהמינימום.","Strada Prè de Vì 20, San Cassiano, Italy"],["Hotel Armentarola","ארמנטרולה","near",46.561095,11.9528359,"offer","€413","הצעת חדר Standard Small עם ארוחת בוקר. הצעה קודמת €573 בחצי פנסיון; לברר מסים.","Strada Prè de Vì 12, San Cassiano, Italy"],["Hotel Gran Paradiso","ארמנטרולה","near",46.5627235,11.9510895,"blocked",">€300","כרגע לא מאפשרים לילה אחד באמצע השבוע. אפשר לנסות שוב בעוד כמה חודשים.","Strada Prè de Vì 11, San Cassiano, Italy"],["Ciasa Salares","ארמנטרולה","near",46.5613894,11.9558841,"reserved","€304 + מסים","המלון כתב שהחדר שמור. חדר Standard עם מקלחת וארוחת בוקר. מקדמה תידרש בתחילת יוני 2027; אין אישור תשלום.","Strada Prè de Vì 31, San Cassiano, Italy"],["Hotel Gran Ancëi","Prè de Costa","near",46.5570596,11.9557079,"later","","יפתחו הזמנות לקיץ 2027 בינואר 2027.","Strada Prè de Costa 10, San Cassiano, Italy"],["Les Pizades","Prè de Costa","near",46.5560962,11.9578658,"pending","","נשלח מייל, אין תשובה. הסמן משוער לפי הרחוב בלבד; לא מיקום הבניין המדויק.","Strada Prè de Costa 28, San Cassiano, Italy",true],["Ciasa Ai Pini","Glira","near",46.5643754,11.9478955,"offer","€190 + מס מקומי","הצעת סוויטה 35 מ״ר עם מקלחת ואמבטיה וארוחת בוקר. עדיין לא הוזמנה.","Strada Glira 4, San Cassiano, Italy"],["Garni Baita","Glira","near",46.5658212,11.9463738,"pending","","נשלח מייל, אין תשובה.","Strada Glira 7, San Cassiano, Italy"],["Ciasa Rü Blanch","Glira","near",46.5662717,11.9491394,"pending","","נשלח מייל, אין תשובה.","Strada Glira 39, San Cassiano, Italy"],["Camping Sass Dlacia","Sciaré","near",46.5535142,11.9706769,"blocked","","אין אפשרות ללילה אחד בשיא העונה: מינימום 4 לילות בבקתה או 7 לילות בחדר Residence.","Sciaré 11, San Cassiano, Italy"],["Plang Farmhouse","סן קסיאנו","san",46.5687283,11.9407935,"pending","","נשלח מייל, אין תשובה.","Strada Plan 31a, San Cassiano, Italy"],["Garni La Palsa","סן קסיאנו","san",46.568347,11.9391902,"pending","","נשלח מייל, אין תשובה.","Strada Plan 24, San Cassiano, Italy"],["Garni Jasmin","סן קסיאנו","san",46.5697257,11.9381908,"pending","","נשלח מייל, אין תשובה.","Strada Plan 11, San Cassiano, Italy"],["Garni Irsara","סן קסיאנו","san",46.5815455,11.9192079,"later","","מינימום 7 לילות כעת; אולי יתאפשר לילה אחד סמוך לתאריך.","Strada Ciampidel 11, San Cassiano, Italy"],["B&B Travenanzes","מרכז סן קסיאנו","san",46.5718622,11.9308913,"pending","","נשלח מייל, אין תשובה.","Strada Micurà de Rü 19, San Cassiano, Italy"],["Ciasa Roby","סן קסיאנו","san",46.5708201,11.9351635,"online","","שלחו קישור להצעה, אבל המחיר לא מופיע בגוף המייל.","Strada Micurà de Rü 67, San Cassiano, Italy"],["Rifugio Valparola","Passo Valparola","passes",46.5316686,11.9883989,"blocked","","השיבו שהבקתה מלאה ב־29 ביולי 2027.","Passo Valparola, Badia, Italy"],["Rifugio Lagazuoi","על ההר","passes",46.527754,12.008133,"online","","יעד לינה מקורי. אין אישור מקום; לבדוק הזמנה ישירה.","Rifugio Lagazuoi, Cortina d’Ampezzo, Italy"],["Rifugio Scotoni","על מסלול ההליכה","passes",46.5530968,11.9983952,"online","","ניסינו להשיג חדר. הזמנות רק באתר הבקתה; אין רשימת המתנה.","Rifugio Scotoni, Badia, Italy"],["Rifugio Col Gallina","Passo Falzarego","passes",46.5196445,12.017221,"online","","מפנים לבדיקה באתר Bukly: rifugiocolgallina.bukly.com. אין אישור הזמנה.","Passo Falzarego, Cortina d’Ampezzo, Italy"],["Hotel Al Sasso di Stria","Passo Falzarego","passes",46.5140615,12.0018694,"pending","","נשלח מייל, אין תשובה.","Passo Falzarego, Livinallongo del Col di Lana, Italy"],["Ciasa Vervei","כביש לקורטינה","pocol",46.5206883,12.0944063,"pending","","נשלח מייל, אין תשובה.","Località Vervei, Cortina d’Ampezzo, Italy"],["Hotel Piccolo Pocol","Pocol","pocol",46.5220557,12.1087437,"pending","","נשלח מייל, אין תשובה.","Pocol, Cortina d’Ampezzo, Italy"],["Hotel Villa Argentina","Pocol","pocol",46.5246208,12.1124757,"pending","","נשלח מייל, אין תשובה.","Pocol, Cortina d’Ampezzo, Italy"],["Hotel Oasi","קורטינה","cortina",46.5400451,12.1371661,"pending","","נשלח מייל, אין תשובה.","Via Antonio Cantore, Cortina d’Ampezzo, Italy"],["Hotel Montana","קורטינה","cortina",46.5377375,12.1367942,"offer","€225 כולל מס","חדר זוגי 14 מ״ר וארוחת בוקר, €220 + €5 מס. כ־15 דקות הליכה לתחנת אוטובוס. ההצעה תקפה עד 30.11.2026, חדר לא שמור.","Corso Italia 94, Cortina d’Ampezzo, Italy"],["Hotel Corona","קורטינה","cortina",46.5401397,12.1299096,"pending","","נשלח מייל, אין תשובה.","Via Val di Sotto, Cortina d’Ampezzo, Italy"],["Hotel Villa Neve","קורטינה","cortina",46.5368869,12.1410037,"online","","המלון ביקש לבדוק באתר שלו זמינות ומחיר.","Via Barone Franchetti 18, Cortina d’Ampezzo, Italy"],["Hotel Olimpia","קורטינה","cortina",46.5387698,12.1365773,"pending","","נשלח מייל, אין תשובה.","Largo Poste, Cortina d’Ampezzo, Italy"]];const ROUTE=[["Rifugio Lagazuoi",46.527754,12.008133,"בקתה גבוהה, יעד הלינה המקורי"],["Rifugio Scotoni",46.5530968,11.9983952,"בקתה לאורך הירידה דרך אגם Lagazuoi"],["Capanna Alpina",46.5599932,11.9821775,"נקודת דרך אחרי Scotoni"],["Passo Falzarego",46.5185185,12.0087004,"תחנת הרכבל היורד מלגזוי"],["Passo Valparola",46.5311012,11.9895601,"מעבר הרים בכביש"],["Hotel Valparol / אזור חציית שביל 11 לכביש",46.5592434,11.9574803,"נקודת ייחוס בלבד"]];
+const LBL={reserved:"חדר שמור",offer:"הצעת מחיר",blocked:"לא מתאים ללילה",pending:"ממתינים לתשובה",online:"לבדוק באתר",later:"לבדוק בהמשך"};
+let map=null,layer=null,markers=[],group="all",stat="all",query="",visible=[];
+const hotels=HOTELS.map((a,i)=>({id:i,name:a[0],area:a[1],group:a[2],lat:a[3],lng:a[4],status:a[5],price:a[6],note:a[7],address:a[8],approx:!!a[9]}));
+const $=id=>document.getElementById(id);
+const gm=p=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(p.name+" "+p.address);
+const gd=p=>"https://www.google.com/maps/dir/?api=1&destination="+p.lat+","+p.lng+"&travelmode=walking";
+const esc=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function markerIcon(s,symbol){return L.divIcon({className:"",iconSize:[26,26],iconAnchor:[13,13],html:'<span class="lpin '+(symbol?"trail":s)+'">'+(symbol||"")+'</span>'})}
+function popup(p){return '<div dir="rtl"><b>'+esc(p.name)+'</b><div>'+esc(p.area)+' · '+esc(LBL[p.status])+(p.price?' · <strong>'+esc(p.price)+'</strong>':'')+'</div><p>'+esc(p.note)+'</p><a target="_blank" rel="noopener" href="'+gm(p)+'">פתחו בגוגל מפות</a></div>'}
+function fit(items){if(!map||!items.length)return;const b=L.latLngBounds(items.map(p=>[p.lat,p.lng]));map.fitBounds(b,{padding:[25,25],maxZoom:15});}
+function select(id){const m=markers[id];if(!map||!m)return;map.flyTo(m.getLatLng(),14,{duration:.5});setTimeout(()=>m.openPopup(),560);}
+function render(){
+visible=hotels.filter(p=>(group==="all"||p.group===group)&&(stat==="all"||p.status===stat)&&(!query||[p.name,p.area,p.note].join(" ").toLowerCase().includes(query)));
+$("count").textContent="מציגים "+visible.length+" מתוך 29 מקומות";
+$("list").innerHTML="";
+visible.forEach(p=>{
+const box=document.createElement("article");box.className="card "+p.status;box.tabIndex=0;
+box.innerHTML='<div class="card-head"><div><h3>'+esc(p.name)+'</h3><div class="area">'+esc(p.area)+'</div></div><span class="tag '+p.status+'">'+esc(LBL[p.status])+'</span></div><div class="price">'+esc(p.price)+'</div><p class="details">'+esc(p.note)+'</p><div class="links"><a href="'+gm(p)+'" target="_blank" rel="noopener">מיקום בגוגל מפות</a><a href="'+gd(p)+'" target="_blank" rel="noopener">ניווט ברגל</a><button type="button">הצג במפה</button></div>';
+box.querySelector("button").onclick=e=>{e.stopPropagation();select(p.id);if(innerWidth<=850)$("map").scrollIntoView({behavior:"smooth",block:"start"});};
+box.onclick=e=>{if(e.target.closest("a,button"))return;select(p.id);};box.onkeydown=e=>{if(e.key==="Enter")select(p.id);};$("list").appendChild(box);
+});
+if(layer){layer.clearLayers();visible.forEach(p=>layer.addLayer(markers[p.id]));}
+if(group!=="all"&&stat==="all"&&!query)fit(visible);
+}
+function init(){
+if(!window.L){$("map").textContent="המפה לא נטענה. הקישורים לגוגל מפות ברשימה זמינים.";return;}
+map=L.map("map",{scrollWheelZoom:false}).setView([46.55,12.01],11);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'}).addTo(map);
+layer=L.layerGroup().addTo(map);
+markers=hotels.map(p=>L.marker([p.lat,p.lng],{icon:markerIcon(p.status)}).bindPopup(popup(p)));
+ROUTE.forEach((t,i)=>{
+const r=L.marker([t[1],t[2]],{zIndexOffset:450,icon:markerIcon("trail",i===0?"★":"•")});
+r.bindPopup('<div dir="rtl"><b>'+esc(t[0])+'</b><p>'+esc(t[3])+'</p><a href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(t[0]+" Italy")+'" target="_blank">פתחו בגוגל מפות</a></div>').addTo(map);
+});
+render();fit(hotels);setTimeout(()=>map.invalidateSize(),300);
+}
+$("filters").onclick=e=>{const el=e.target.closest("button[data-group]");if(!el)return;group=el.dataset.group;document.querySelectorAll("button[data-group]").forEach(b=>b.classList.toggle("sel",b===el));render();};
+$("search").oninput=e=>{query=e.target.value.toLowerCase().trim();render();};
+$("stat").onchange=e=>{stat=e.target.value;render();};
+$("near").onclick=()=>fit(hotels.filter(p=>p.group==="near"));
+$("all").onclick=()=>fit(hotels);
+function msg(s){const t=$("toast");t.textContent=s;t.style.display="block";setTimeout(()=>t.style.display="none",2300);}
+$("copy").onclick=async()=>{try{await navigator.clipboard.writeText(location.href);msg("הקישור הועתק");}catch(e){msg("העתיקו את הקישור משורת הכתובת");}};
+$("share").onclick=async()=>{if(navigator.share){try{await navigator.share({title:"פולינה ואלי · מפת לינה",text:"אפשרויות לינה בדולומיטים · 29–30.7.2027",url:location.href});}catch(e){}}else $("copy").click();};
+window.addEventListener("load",init);
+</script></body></html>
